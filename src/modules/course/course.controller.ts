@@ -3,12 +3,12 @@ import { authenticated, requireTeacherOrAdmin, requireAdmin } from '../../shared
 import type { CourseService } from './course.service'
 
 export class CourseController {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(private readonly courseService: CourseService) { }
 
   createRoutes() {
     return new Elysia({ prefix: '/courses', tags: ['Courses'] })
 
-      // ── Listar turmas ──────────────────────────────
+      // Listar turmas 
       .use(authenticated)
       .get('/', ({ user }) => this.courseService.list(user), {
         auth: true,
@@ -18,7 +18,7 @@ export class CourseController {
         },
       })
 
-      // ── Detalhe de uma turma ───────────────────────
+      // Detalhe de uma turma 
       .get('/:courseId', async ({ params: { courseId }, user, status }) => {
         const result = await this.courseService.getById(courseId, user)
         if ('error' in result) {
@@ -34,7 +34,7 @@ export class CourseController {
         },
       })
 
-      // ── Criar turma (teacher/admin) ────────────────
+      // Criar turma (teacher/admin) 
       .use(requireTeacherOrAdmin)
       .post('/', async ({ body, user, status }) => {
         const result = await this.courseService.create(body, user)
@@ -57,7 +57,7 @@ export class CourseController {
         },
       })
 
-      // ── Atualizar turma ────────────────────────────
+      // Atualizar turma 
       .put('/:courseId', async ({ params: { courseId }, body, user, status }) => {
         const result = await this.courseService.update(courseId, body, user)
 
@@ -76,12 +76,12 @@ export class CourseController {
           isActive: t.Optional(t.Boolean({ description: 'Ativar ou desativar a turma' })),
         }),
         detail: {
-          summary: 'Atualizar turma',
+          summary: 'Atualizarturma',
           description: 'Atualiza dados de uma turma existente. Teacher só pode atualizar turmas que leciona. Admin pode atualizar qualquer turma.',
         },
       })
 
-      // ── Deletar turma (admin only) ─────────────────
+      // Deletar turma  
       .use(requireAdmin)
       .delete('/:courseId', async ({ params: { courseId }, status }) => {
         const result = await this.courseService.delete(courseId)
