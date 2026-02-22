@@ -1,7 +1,7 @@
 import type { PrismaClient } from '../../generated/prisma/client'
 
 export class CourseRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
 
   findAll() {
     return this.prisma.course.findMany({
@@ -40,7 +40,7 @@ export class CourseRepository {
       where: { id },
       include: {
         teacher: { select: { id: true, name: true, email: true } },
-        materials: { orderBy: { createdAt: 'desc' } },
+        modules: { include: { contents: { orderBy: { order: 'asc' } } }, orderBy: { order: 'asc' } },
         assignments: { orderBy: { createdAt: 'desc' } },
         enrollments: {
           include: { student: { select: { id: true, name: true, email: true } } },
